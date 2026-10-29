@@ -37,7 +37,7 @@ const LampLayout = () => {
               <span className="h-px w-8 bg-amarelo-claro/40 sm:w-12" />
 
               <span className="text-[10px] uppercase tracking-[0.3em] text-amarelo-claro/60 sm:text-xs">
-                Vinheria Agnello · Monitoramento
+                Colosys Sentinel · Monitoramento
               </span>
 
               <span className="h-px w-8 bg-amarelo-claro/40 sm:w-12" />
@@ -107,7 +107,7 @@ const LampLayout = () => {
           {/* Rodapé */}
           <footer className="mt-12 flex flex-col items-center gap-2 border-t border-amarelo-claro/10 pt-6 text-center">
             <span className="text-[10px] uppercase tracking-[0.25em] text-amarelo-claro/40">
-              Vinheria Agnela
+              Colosys Sentinel
             </span>
 
             <p className="text-xs text-texto/30">
