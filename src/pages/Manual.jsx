@@ -1,78 +1,27 @@
 import { useState } from "react";
 
 const secoes = [
-  { id: "introducao", numero: "01", titulo: "Apresentação", icon: "◈" },
-  { id: "sistema", numero: "02", titulo: "Visão geral", icon: "▦" },
-  { id: "componentes", numero: "03", titulo: "Componentes", icon: "⌘" },
-  { id: "montagem", numero: "04", titulo: "Montagem e conexões", icon: "⌁" },
-  { id: "sensores", numero: "05", titulo: "Sensores", icon: "◉" },
-  { id: "conexao", numero: "06", titulo: "Conectividade", icon: "⌁" },
-  { id: "mqtt", numero: "07", titulo: "MQTT e FIWARE", icon: "⇄" },
-  { id: "alertas", numero: "08", titulo: "Sistema de alertas", icon: "⚠" },
-  { id: "utilizacao", numero: "09", titulo: "Inicialização", icon: "▷" },
-  { id: "monitoramento", numero: "10", titulo: "Monitoramento", icon: "▤" },
-  { id: "problemas", numero: "11", titulo: "Solução de problemas", icon: "⚙" },
-  { id: "manutencao", numero: "12", titulo: "Manutenção", icon: "✧" },
-];
-
-const componentes = [
   {
-    nome: "ESP32 DevKit V1",
-    tipo: "Microcontrolador",
-    descricao:
-      "Responsável por executar a programação, processar as leituras dos sensores e realizar a comunicação Wi-Fi e MQTT.",
-    icon: "▣",
+    id: "introducao",
+    numero: "01",
+    titulo: "Conhecendo o aparelho",
+    icon: "◈",
   },
-  {
-    nome: "Sensor LDR",
-    tipo: "Luminosidade",
-    descricao:
-      "Identifica a intensidade de luz do ambiente por meio da variação de resistência elétrica.",
-    icon: "☼",
-  },
-  {
-    nome: "DHT22",
-    tipo: "Temperatura e umidade",
-    descricao:
-      "Realiza a medição da temperatura e da umidade relativa do ambiente.",
-    icon: "♨",
-  },
-  {
-    nome: "LED externo",
-    tipo: "Sinalização visual",
-    descricao:
-      "Pisca durante a ativação do alerta, indicando visualmente que o alarme está ativo.",
-    icon: "◉",
-  },
-  {
-    nome: "Buzzer",
-    tipo: "Sinalização sonora",
-    descricao:
-      "Emite um sinal sonoro sincronizado com o LED durante a ativação do alerta.",
-    icon: "♫",
-  },
-  {
-    nome: "Resistor de 220 Ω",
-    tipo: "Proteção elétrica",
-    descricao:
-      "Limita a corrente elétrica do LED, ajudando a evitar danos ao componente.",
-    icon: "▤",
-  },
-];
-
-const conexoes = [
-  { componente: "LDR", pino: "34", funcao: "Leitura analógica" },
-  { componente: "DHT22", pino: "4", funcao: "Dados de temperatura e umidade" },
-  { componente: "LED externo", pino: "26", funcao: "Saída digital" },
-  { componente: "Buzzer", pino: "27", funcao: "Saída sonora / PWM" },
-  { componente: "LED da placa", pino: "2", funcao: "Indicador de conexão" },
+  { id: "primeiro-acesso", numero: "02", titulo: "Primeiro acesso", icon: "▦" },
+  { id: "site", numero: "03", titulo: "Utilizando a plataforma", icon: "⌘" },
+  { id: "monitoramento", numero: "04", titulo: "Monitoramento", icon: "◉" },
+  { id: "dados", numero: "05", titulo: "Coleta e interpretação", icon: "▤" },
+  { id: "alertas", numero: "06", titulo: "Alertas", icon: "⚠" },
+  { id: "instalacao", numero: "07", titulo: "Posicionamento", icon: "⌁" },
+  { id: "cuidados", numero: "08", titulo: "Cuidados e conservação", icon: "✧" },
+  { id: "problemas", numero: "09", titulo: "Dúvidas frequentes", icon: "?" },
 ];
 
 function Manual() {
   const [secaoAtiva, setSecaoAtiva] = useState("introducao");
   const [busca, setBusca] = useState("");
   const [menuAberto, setMenuAberto] = useState(false);
-  const [abertos, setAbertos] = useState(["wifi", "mqtt"]);
+  const [abertos, setAbertos] = useState(["cadastro", "temperatura"]);
 
   const secoesFiltradas = secoes.filter((secao) =>
     secao.titulo.toLowerCase().includes(busca.toLowerCase()),
@@ -128,12 +77,6 @@ function Manual() {
     );
   };
 
-  const Codigo = ({ children }) => (
-    <pre className="my-4 overflow-x-auto rounded-lg border border-[#ffffff12] bg-[#10100c] p-4 text-xs leading-6 text-[#e7d98b]">
-      <code>{children}</code>
-    </pre>
-  );
-
   const Accordion = ({ id, titulo, children }) => (
     <div className="overflow-hidden rounded-xl border border-[#ffffff15] bg-[#ffffff05]">
       <button
@@ -147,10 +90,19 @@ function Manual() {
       </button>
 
       {abertos.includes(id) && (
-        <div className="border-t border-[#ffffff10] p-4 text-sm leading-7 text-[#bcb8a4]">
+        <div className="border-t border-white/10 p-4 text-sm leading-7 text-[#bcb8a4]">
           {children}
         </div>
       )}
+    </div>
+  );
+
+  const CartaoDado = ({ icon, titulo, valor, descricao }) => (
+    <div className="rounded-xl border border-white/10 bg-[#ffffff05] p-5">
+      <span className="text-2xl text-[#d5c578]">{icon}</span>
+      <p className="mt-3 text-sm font-semibold text-[#fefae0]">{titulo}</p>
+      <p className="mt-2 text-2xl font-bold text-[#d5c578]">{valor}</p>
+      <p className="mt-2 text-xs leading-6 text-[#aaa68f]">{descricao}</p>
     </div>
   );
 
@@ -182,23 +134,22 @@ function Manual() {
                 C
               </div>
               <div>
-                <h1 className="font-bold tracking-[0.2em] text-[#fefae0]">
-                  COLOSYS
-                </h1>
+                <h1 className="font-bold tracking-[0.2em]">COLOSYS</h1>
                 <p className="text-[10px] tracking-[0.25em] text-[#a99a49]">
                   SENTINEL SYSTEM
                 </p>
               </div>
             </div>
             <p className="mt-5 text-xs leading-6 text-[#aaa68f]">
-              Central de documentação técnica e operacional do sistema de
-              monitoramento inteligente.
+              Guia de utilização do Colosys Sentinel. Aprenda a acompanhar as
+              condições do seu ambiente e utilizar todas as funcionalidades
+              disponíveis.
             </p>
           </div>
 
           <div className="px-4 pt-5">
             <label className="mb-2 block text-[10px] font-bold tracking-[0.2em] text-[#85816d]">
-              DOCUMENTAÇÃO
+              MANUAL DO USUÁRIO
             </label>
             <input
               type="text"
@@ -234,7 +185,7 @@ function Manual() {
               COLOSYS SENTINEL
             </p>
             <p className="mt-1 text-xs text-[#aaa68f]">
-              Manual técnico • Versão 1.0
+              Manual do usuário • Versão 1.0
             </p>
           </div>
         </aside>
@@ -247,520 +198,140 @@ function Manual() {
               <div className="mb-6 flex flex-wrap items-center gap-2 text-[10px] tracking-[0.2em] text-[#a99a49]">
                 <span>COLOSYS</span>
                 <span>/</span>
-                <span>DOCUMENTAÇÃO</span>
+                <span>ÁREA DO USUÁRIO</span>
                 <span>/</span>
-                <span>MANUAL DO SISTEMA</span>
+                <span>MANUAL</span>
               </div>
 
               <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
                 <div>
                   <span className="rounded-full border border-[#a99a49]/40 bg-[#a99a49]/10 px-3 py-1 text-[10px] tracking-widest text-[#e7d98b]">
-                    DOCUMENTAÇÃO TÉCNICA
+                    GUIA DO USUÁRIO
                   </span>
+
                   <h1 className="mt-5 text-4xl font-bold leading-tight md:text-6xl">
-                    Manual do
+                    Conheça o
                     <span className="block text-[#c5b66a]">
                       Colosys Sentinel.
                     </span>
                   </h1>
+
                   <p className="mt-5 max-w-xl text-sm leading-7 text-[#aaa68f]">
-                    Guia completo de instalação, configuração, operação e
-                    manutenção do sistema de monitoramento inteligente
-                    desenvolvido com ESP32 e sensores ambientais.
+                    Tudo o que você precisa saber para utilizar seu aparelho,
+                    acompanhar as condições do ambiente e consultar as
+                    informações pela plataforma Colosys.
                   </p>
                 </div>
 
                 <div className="rounded-xl border border-[#a99a49]/30 bg-[#a99a49]/5 p-5 md:min-w-40">
                   <p className="text-[10px] tracking-widest text-[#a99a49]">
-                    VERSÃO
+                    VERSÃO DO MANUAL
                   </p>
-                  <p className="mt-1 text-3xl font-bold text-[#fefae0]">1.0</p>
+                  <p className="mt-1 text-3xl font-bold">1.0</p>
                   <p className="mt-1 text-xs text-[#aaa68f]">Outubro / 2026</p>
                 </div>
               </div>
             </header>
 
-            {/* INTRODUÇÃO */}
+            {/* 01 - APRESENTAÇÃO */}
             <section id="introducao" className="mb-16 scroll-mt-8">
               <TituloSecao
                 numero="01"
-                titulo="Apresentação do projeto"
-                descricao="Conheça a proposta, os objetivos e as funcionalidades do Colosys Sentinel."
+                titulo="Conhecendo o Colosys Sentinel"
+                descricao="Entenda o que é o aparelho e como ele pode ajudar no acompanhamento do seu ambiente."
               />
 
               <div className="grid gap-5 md:grid-cols-2">
                 <Bloco titulo="O que é o Colosys Sentinel?">
-                  O Colosys Sentinel é um sistema de monitoramento inteligente
-                  baseado em IoT (Internet das Coisas). Utiliza um
-                  microcontrolador ESP32 para coletar informações ambientais e
-                  transmitir os dados para uma infraestrutura de monitoramento.
+                  O Colosys Sentinel é um aparelho inteligente de monitoramento
+                  ambiental. Ele utiliza sensores para acompanhar
+                  características do ambiente, como temperatura, umidade do ar e
+                  luminosidade. As informações coletadas são enviadas para uma
+                  plataforma online, permitindo que você consulte os dados de
+                  maneira prática.
                 </Bloco>
 
-                <Bloco titulo="Objetivo principal">
-                  Oferecer visibilidade sobre as condições do ambiente por meio
-                  de sensores de luminosidade, temperatura e umidade, permitindo
-                  o acompanhamento das leituras e a ativação remota de um
-                  mecanismo de alerta.
+                <Bloco titulo="Para que serve?">
+                  O aparelho permite acompanhar as condições do ambiente ao
+                  longo do tempo, identificar mudanças e observar possíveis
+                  situações que mereçam atenção. É uma ferramenta de apoio ao
+                  monitoramento, oferecendo mais visibilidade sobre o espaço em
+                  que está instalado.
                 </Bloco>
               </div>
 
               <Aviso titulo="Importante">
-                O sistema utiliza o LED e o buzzer como sinalizadores de alerta.
-                A ativação do mecanismo não representa, necessariamente, o
-                acionamento de uma iluminação convencional.
+                O Colosys Sentinel é um equipamento de monitoramento. Ele não
+                substitui instrumentos profissionais de medição, sistemas de
+                segurança ou avaliações técnicas especializadas.
               </Aviso>
 
               <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
                 {[
-                  ["01", "Monitoramento"],
-                  ["02", "Conectividade"],
-                  ["03", "Automação"],
-                  ["04", "Alertas"],
-                ].map(([n, nome]) => (
+                  ["01", "Temperatura"],
+                  ["02", "Umidade"],
+                  ["03", "Luminosidade"],
+                  ["04", "Monitoramento"],
+                ].map(([numero, nome]) => (
                   <div
-                    key={n}
+                    key={numero}
                     className="rounded-xl border border-white/10 bg-[#ffffff05] p-4"
                   >
-                    <p className="text-xl font-bold text-[#b9a958]">{n}</p>
+                    <p className="text-xl font-bold text-[#b9a958]">{numero}</p>
                     <p className="mt-2 text-xs text-[#aaa68f]">{nome}</p>
                   </div>
                 ))}
               </div>
             </section>
 
-            {/* VISÃO GERAL */}
-            <section id="sistema" className="mb-16 scroll-mt-8">
+            {/* 02 - PRIMEIRO ACESSO */}
+            <section id="primeiro-acesso" className="mb-16 scroll-mt-8">
               <TituloSecao
                 numero="02"
-                titulo="Visão geral do sistema"
-                descricao="Entenda como os componentes se comunicam e como os dados percorrem a arquitetura."
+                titulo="Primeiro acesso ao sistema"
+                descricao="Aprenda a acessar a plataforma e vincular seu aparelho à sua conta."
               />
 
-              <div className="rounded-xl border border-white/10 bg-[#ffffff05] p-5 md:p-8">
-                <div className="grid gap-3 text-center">
-                  <div className="rounded-lg border border-[#a99a49]/40 bg-[#a99a49]/10 p-4">
-                    <p className="text-xs font-bold text-[#e7d98b]">
-                      CAMADA FÍSICA
-                    </p>
-                    <p className="mt-2 text-sm text-[#fefae0]">
-                      ESP32 + LDR + DHT22 + LED + Buzzer
-                    </p>
-                  </div>
-                  <div className="text-xl text-[#b9a958]">↓</div>
-                  <div className="rounded-lg border border-white/10 bg-[#ffffff08] p-4">
-                    <p className="text-xs font-bold text-[#e7d98b]">
-                      CONECTIVIDADE
-                    </p>
-                    <p className="mt-2 text-sm text-[#fefae0]">
-                      Wi-Fi + Protocolo MQTT
-                    </p>
-                  </div>
-                  <div className="text-xl text-[#b9a958]">↓</div>
-                  <div className="rounded-lg border border-white/10 bg-[#ffffff08] p-4">
-                    <p className="text-xs font-bold text-[#e7d98b]">
-                      INFRAESTRUTURA
-                    </p>
-                    <p className="mt-2 text-sm text-[#fefae0]">
-                      Broker MQTT + FIWARE
-                    </p>
-                  </div>
-                  <div className="text-xl text-[#b9a958]">↓</div>
-                  <div className="rounded-lg border border-[#a99a49]/40 bg-[#a99a49]/10 p-4">
-                    <p className="text-xs font-bold text-[#e7d98b]">
-                      APLICAÇÃO
-                    </p>
-                    <p className="mt-2 text-sm text-[#fefae0]">
-                      Cliente Colosys Lamp
-                    </p>
-                  </div>
-                </div>
+              <div className="rounded-xl border border-[#a99a49]/30 bg-[#a99a49]/5 p-6">
+                <span className="text-[10px] font-bold tracking-widest text-[#a99a49]">
+                  SEU APARELHO POSSUI
+                </span>
+                <h3 className="mt-2 text-xl font-bold">
+                  QR Code e identificação exclusiva
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-[#bcb8a4]">
+                  Na identificação do aparelho você encontrará um QR Code, que
+                  direciona para o site do projeto, e um código de identificação
+                  (ID), utilizado para cadastrar o dispositivo.
+                </p>
               </div>
 
-              <p className="mt-4 text-xs leading-6 text-[#85816d]">
-                Fluxo conceitual da arquitetura. A disponibilidade de cada
-                camada depende da configuração e do funcionamento da
-                infraestrutura correspondente.
-              </p>
-            </section>
-
-            {/* COMPONENTES */}
-            <section id="componentes" className="mb-16 scroll-mt-8">
-              <TituloSecao
-                numero="03"
-                titulo="Componentes utilizados"
-                descricao="Identificação dos principais componentes eletrônicos empregados no protótipo."
-              />
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                {componentes.map((item) => (
-                  <div
-                    key={item.nome}
-                    className="rounded-xl border border-white/10 bg-[#ffffff05] p-5 transition hover:border-[#a99a49]/50"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#a99a49]/10 text-2xl text-[#d5c578]">
-                        {item.icon}
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-[#fefae0]">
-                          {item.nome}
-                        </h3>
-                        <span className="text-[10px] uppercase tracking-widest text-[#a99a49]">
-                          {item.tipo}
-                        </span>
-                        <p className="mt-3 text-xs leading-6 text-[#aaa68f]">
-                          {item.descricao}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* MONTAGEM */}
-            <section id="montagem" className="mb-16 scroll-mt-8">
-              <TituloSecao
-                numero="04"
-                titulo="Montagem e conexões"
-                descricao="Identificação das conexões entre os periféricos e o microcontrolador."
-              />
-
-              <Bloco titulo="Identificação dos pinos">
-                A montagem utiliza os pinos GPIO do ESP32 para receber
-                informações dos sensores e controlar os dispositivos de
-                sinalização.
-              </Bloco>
-
-              <div className="mt-5 overflow-x-auto rounded-xl border border-white/10">
-                <table className="w-full min-w-[450px] text-left text-sm">
-                  <thead className="bg-[#a99a49]/10 text-xs text-[#d5c578]">
-                    <tr>
-                      <th className="p-4">COMPONENTE</th>
-                      <th className="p-4">GPIO</th>
-                      <th className="p-4">FUNÇÃO</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {conexoes.map((item) => (
-                      <tr
-                        key={item.componente}
-                        className="border-t border-white/10 text-[#c5c1ac]"
-                      >
-                        <td className="p-4 font-medium text-[#fefae0]">
-                          {item.componente}
-                        </td>
-                        <td className="p-4 font-mono text-[#d5c578]">
-                          {item.pino}
-                        </td>
-                        <td className="p-4 text-xs">{item.funcao}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <Aviso titulo="Atenção à montagem" tipo="alerta">
-                Verifique a alimentação, o GND comum e a identificação dos
-                terminais antes de energizar o circuito. O LED externo utiliza
-                resistor de 220 Ω. Consulte o diagrama do Wokwi para confirmar
-                as ligações físicas de cada componente.
-              </Aviso>
-
-              <a
-                href="https://wokwi.com/projects/465199340265498625"
-                target="_blank"
-                rel="noreferrer"
-                className="mt-5 inline-flex items-center gap-2 rounded-lg border border-[#a99a49]/40 px-5 py-3 text-xs font-semibold text-[#e7d98b] transition hover:bg-[#a99a49]/10"
-              >
-                Visualizar montagem no Wokwi ↗
-              </a>
-            </section>
-
-            {/* SENSORES */}
-            <section id="sensores" className="mb-16 scroll-mt-8">
-              <TituloSecao
-                numero="05"
-                titulo="Sensores e coleta de dados"
-                descricao="Conheça as variáveis ambientais monitoradas pelo dispositivo."
-              />
-
-              <div className="space-y-4">
-                <Bloco titulo="5.1 Sensor de luminosidade — LDR">
-                  O LDR (Light Dependent Resistor) identifica a intensidade
-                  luminosa do ambiente. Sua resistência elétrica varia conforme
-                  a quantidade de luz recebida.
-                  <ul className="mt-3 list-disc space-y-2 pl-5">
-                    <li>Conectado ao GPIO 34 do ESP32.</li>
-                    <li>Utiliza a leitura analógica do conversor ADC.</li>
-                    <li>
-                      Realiza uma média de oito leituras para reduzir ruídos.
-                    </li>
-                    <li>
-                      Converte o resultado para uma escala percentual de 0 a
-                      100.
-                    </li>
-                  </ul>
-                </Bloco>
-
-                <Bloco titulo="5.2 Sensor DHT22 — Temperatura e umidade">
-                  O DHT22 realiza duas medições ambientais:
-                  <ul className="mt-3 list-disc space-y-2 pl-5">
-                    <li>Temperatura em graus Celsius (°C).</li>
-                    <li>Umidade relativa do ar em porcentagem (%).</li>
-                    <li>Comunicação pelo GPIO 4.</li>
-                    <li>Intervalo de leitura configurado em 2 segundos.</li>
-                  </ul>
-                </Bloco>
-              </div>
-
-              <div className="mt-5 grid gap-4 md:grid-cols-3">
-                {[
-                  ["☼", "Luminosidade", "0–100%", "Sensor LDR"],
-                  ["♨", "Temperatura", "°C", "Sensor DHT22"],
-                  ["◉", "Umidade", "%", "Sensor DHT22"],
-                ].map(([icon, nome, unidade, sensor]) => (
-                  <div
-                    key={nome}
-                    className="rounded-xl border border-white/10 bg-[#ffffff05] p-5"
-                  >
-                    <span className="text-2xl text-[#d5c578]">{icon}</span>
-                    <p className="mt-3 text-sm font-semibold">{nome}</p>
-                    <p className="mt-1 text-xl font-bold text-[#d5c578]">
-                      {unidade}
-                    </p>
-                    <p className="mt-2 text-[10px] text-[#85816d]">{sensor}</p>
-                  </div>
-                ))}
-              </div>
-
-              <Aviso titulo="Interpretação dos dados">
-                A escala percentual do LDR representa a luminosidade normalizada
-                pelo programa, não uma medição em lux. A calibração dos extremos
-                depende das características do sensor e do ambiente.
-              </Aviso>
-            </section>
-
-            {/* WIFI */}
-            <section id="conexao" className="mb-16 scroll-mt-8">
-              <TituloSecao
-                numero="06"
-                titulo="Conectividade Wi-Fi"
-                descricao="Configuração e manutenção da conexão de rede do ESP32."
-              />
-
-              <p className="mb-5 text-sm leading-7 text-[#bcb8a4]">
-                O ESP32 utiliza Wi-Fi para estabelecer comunicação com o broker
-                MQTT. Na simulação do Wokwi, o projeto utiliza a rede de testes
-                disponibilizada pela própria plataforma.
-              </p>
-
-              <Accordion id="wifi" titulo="Configuração para simulação Wokwi">
-                No início do arquivo sketch.ino, são definidas as credenciais:
-                <Codigo>{`const char* WIFI_SSID = "Wokwi-GUEST";
-const char* WIFI_PASSWORD = "";`}</Codigo>
-                A rede Wokwi-GUEST não exige senha. O código também configura o
-                canal 6 para acelerar a conexão na simulação.
-              </Accordion>
-
-              <Accordion id="wifi-real" titulo="Configuração para ESP32 físico">
-                Para utilizar uma rede real, substitua as credenciais pelas
-                informações da rede Wi-Fi autorizada:
-                <Codigo>{`const char* WIFI_SSID = "NOME_DA_REDE";
-const char* WIFI_PASSWORD = "SENHA_DA_REDE";`}</Codigo>
-                Não compartilhe senhas em repositórios públicos. Utilize
-                configurações protegidas para armazenar credenciais.
-              </Accordion>
-
-              <Bloco titulo="Reconexão automática">
-                O programa verifica o estado da conexão e realiza novas
-                tentativas de conexão Wi-Fi em intervalos de 10 segundos. O
-                processo não depende de bloqueios prolongados no loop principal.
-              </Bloco>
-            </section>
-
-            {/* MQTT */}
-            <section id="mqtt" className="mb-16 scroll-mt-8">
-              <TituloSecao
-                numero="07"
-                titulo="Comunicação MQTT e FIWARE"
-                descricao="Entenda a transmissão de dados e o recebimento de comandos remotos."
-              />
-
-              <Bloco titulo="O que é MQTT?">
-                MQTT é um protocolo de comunicação leve, utilizado em aplicações
-                IoT. Ele permite que dispositivos publiquem informações e
-                recebam comandos por meio de um broker.
-              </Bloco>
-
-              <div className="mt-5 space-y-4">
-                <Bloco titulo="7.1 Configuração do broker">
-                  O endereço do broker deve ser configurado no código:
-                  <Codigo>{`const char* BROKER_MQTT =
-  "COLOQUE_AQUI_O_IP_DO_BROKER";
-
-const uint16_t BROKER_PORT = 1883;`}</Codigo>
-                  É necessário informar um endereço IP acessível pelo ESP32. O
-                  endereço localhost não deve ser utilizado, pois representa o
-                  próprio microcontrolador, e não o servidor externo.
-                </Bloco>
-
-                <Bloco titulo="7.2 Identificação do dispositivo">
-                  Cada dispositivo possui uma chave de identificação e um
-                  identificador próprio.
-                  <Codigo>{`const char* API_KEY = "TEF";
-const char* DEVICE_ID = "lamp001";`}</Codigo>
-                  Esses valores devem corresponder às credenciais e à identidade
-                  cadastradas na infraestrutura FIWARE.
-                </Bloco>
-              </div>
-
-              <div className="mt-5 overflow-x-auto rounded-xl border border-white/10">
-                <table className="w-full min-w-[450px] text-left text-sm">
-                  <thead className="bg-[#a99a49]/10 text-xs text-[#d5c578]">
-                    <tr>
-                      <th className="p-4">TÓPICO MQTT</th>
-                      <th className="p-4">FINALIDADE</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-xs text-[#c5c1ac]">
-                    <tr className="border-t border-white/10">
-                      <td className="p-4 font-mono">/TEF/lamp001/attrs</td>
-                      <td className="p-4">Envio das leituras e do estado.</td>
-                    </tr>
-                    <tr className="border-t border-white/10">
-                      <td className="p-4 font-mono">/TEF/lamp001/cmd</td>
-                      <td className="p-4">Recebimento de comandos.</td>
-                    </tr>
-                    <tr className="border-t border-white/10">
-                      <td className="p-4 font-mono">/TEF/lamp001/cmdexe</td>
-                      <td className="p-4">Confirmação da execução.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <Aviso titulo="Atenção: configuração obrigatória" tipo="alerta">
-                O código disponibilizado contém um endereço de broker
-                provisório. Sem substituí-lo por um broker válido, o dispositivo
-                poderá conectar-se ao Wi-Fi, mas não conseguirá transmitir os
-                dados ao FIWARE.
-              </Aviso>
-
-              <Bloco titulo="7.3 Integração com FIWARE">
-                O FIWARE recebe e gerencia as informações dos dispositivos IoT.
-                O ESP32 utiliza o protocolo Ultralight sobre MQTT, permitindo
-                transmitir atributos ambientais e receber comandos de
-                acionamento. A integração também prevê a resposta pelo tópico
-                cmdexe, evitando que os comandos permaneçam pendentes na
-                plataforma.
-              </Bloco>
-            </section>
-
-            {/* ALERTAS */}
-            <section id="alertas" className="mb-16 scroll-mt-8">
-              <TituloSecao
-                numero="08"
-                titulo="Sistema de alertas"
-                descricao="Funcionamento do mecanismo de sinalização visual e sonora."
-              />
-
-              <Bloco titulo="8.1 Ativação do alerta">
-                Quando o dispositivo recebe o comando on pelo tópico MQTT, o
-                ESP32 ativa o mecanismo de sinalização.
-                <ul className="mt-3 list-disc space-y-2 pl-5">
-                  <li>O LED externo começa a piscar.</li>
-                  <li>O buzzer emite um sinal sonoro sincronizado.</li>
-                  <li>O estado do dispositivo é atualizado.</li>
-                  <li>O FIWARE recebe a confirmação da execução.</li>
-                </ul>
-              </Bloco>
-
-              <Bloco titulo="8.2 Desativação do alerta">
-                Ao receber o comando off, o programa interrompe a sinalização
-                visual e sonora, atualiza o estado e publica a nova informação
-                na infraestrutura.
-              </Bloco>
-
-              <div className="mt-5 grid gap-4 md:grid-cols-2">
-                <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5">
-                  <span className="text-xs font-bold tracking-widest text-emerald-400">
-                    ESTADO OFF
-                  </span>
-                  <div className="my-4 text-4xl">◉</div>
-                  <p className="text-sm font-bold">Alerta desativado</p>
-                  <p className="mt-2 text-xs leading-6 text-[#aaa68f]">
-                    LED e buzzer permanecem desligados.
-                  </p>
-                </div>
-                <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-5">
-                  <span className="text-xs font-bold tracking-widest text-amber-400">
-                    ESTADO ON
-                  </span>
-                  <div className="my-4 animate-pulse text-4xl">◉</div>
-                  <p className="text-sm font-bold">Alerta ativado</p>
-                  <p className="mt-2 text-xs leading-6 text-[#aaa68f]">
-                    LED pisca e buzzer emite sinal sonoro.
-                  </p>
-                </div>
-              </div>
-
-              <Bloco titulo="8.3 Parâmetros do alarme">
-                <Codigo>{`const bool BUZZER_ENABLED = true;
-const bool BUZZER_PASSIVE = true;
-const int BUZZER_FREQ_HZ = 2000;
-
-const uint32_t BLINK_HALF_PERIOD_MS = 500;`}</Codigo>
-                O período de 500 ms corresponde a cada fase do pisca. Portanto,
-                o ciclo completo de acender e apagar dura aproximadamente 1
-                segundo.
-              </Bloco>
-            </section>
-
-            {/* UTILIZAÇÃO */}
-            <section id="utilizacao" className="mb-16 scroll-mt-8">
-              <TituloSecao
-                numero="09"
-                titulo="Inicialização e utilização"
-                descricao="Procedimento para iniciar a simulação e verificar o funcionamento do dispositivo."
-              />
-
-              <div className="space-y-3">
+              <div className="mt-5 space-y-3">
                 {[
                   [
                     "01",
-                    "Acesse o projeto",
-                    "Abra o projeto Colosys Sentinel na plataforma Wokwi.",
+                    "Localize o QR Code",
+                    "Encontre a etiqueta de identificação presente no aparelho.",
                   ],
                   [
                     "02",
-                    "Verifique o circuito",
-                    "Confira os componentes e suas conexões antes de iniciar.",
+                    "Acesse a plataforma",
+                    "Utilize a câmera do celular para ler o QR Code. Você será direcionado ao site do Colosys.",
                   ],
                   [
                     "03",
-                    "Inicie a simulação",
-                    "Clique em Start Simulation para executar o ESP32.",
+                    "Crie seu cadastro ou entre na conta",
+                    "Siga as instruções apresentadas na plataforma para acessar sua conta.",
                   ],
                   [
                     "04",
-                    "Verifique o Wi-Fi",
-                    "Observe o console Serial e aguarde a conexão.",
+                    "Informe o ID do aparelho",
+                    "Durante o cadastro do dispositivo, insira o código de identificação que acompanha seu Colosys Sentinel.",
                   ],
                   [
                     "05",
-                    "Configure o broker",
-                    "Informe o endereço correto do servidor MQTT.",
-                  ],
-                  [
-                    "06",
-                    "Verifique a telemetria",
-                    "Acompanhe as leituras e a publicação dos atributos.",
-                  ],
-                  [
-                    "07",
-                    "Teste os comandos",
-                    "Envie on e off pela infraestrutura MQTT/FIWARE.",
+                    "Finalize o cadastro",
+                    "Confira se o identificador foi informado corretamente e conclua o procedimento.",
                   ],
                 ].map(([numero, titulo, descricao]) => (
                   <div
@@ -780,175 +351,506 @@ const uint32_t BLINK_HALF_PERIOD_MS = 500;`}</Codigo>
                 ))}
               </div>
 
-              <Aviso titulo="Sobre os comandos">
-                Os comandos on e off são recebidos pelo tópico MQTT de comando.
-                A interface do cliente precisa estar integrada à infraestrutura
-                para que o acionamento remoto funcione. Iniciar a simulação,
-                isoladamente, não configura o broker.
+              <Aviso titulo="Atenção ao ID do aparelho" tipo="alerta">
+                Cada aparelho possui sua própria identificação. Informe
+                exatamente o ID presente na etiqueta. Não utilize o
+                identificador de outro dispositivo.
+              </Aviso>
+
+              <Accordion id="cadastro" titulo="Por que preciso cadastrar o ID?">
+                O ID permite que a plataforma identifique qual aparelho está
+                associado ao seu cadastro. Dessa forma, os dados recebidos podem
+                ser relacionados ao dispositivo correto. Guarde essa
+                identificação para eventuais consultas ou solicitações de
+                suporte.
+              </Accordion>
+            </section>
+
+            {/* 03 - SITE */}
+            <section id="site" className="mb-16 scroll-mt-8">
+              <TituloSecao
+                numero="03"
+                titulo="Utilizando a plataforma Colosys"
+                descricao="Saiba como acessar o ambiente online e consultar as informações do aparelho."
+              />
+
+              <Bloco titulo="Acesso pelo site">
+                A plataforma Colosys é o ambiente utilizado para visualizar as
+                informações enviadas pelo aparelho. Você pode acessá-la pelo QR
+                Code presente no dispositivo ou diretamente pelo endereço
+                disponibilizado pelo projeto.
+              </Bloco>
+
+              <div className="mt-5 space-y-4">
+                <Bloco titulo="Seu dispositivo cadastrado">
+                  Após realizar o cadastro, utilize sua conta para acessar o
+                  aparelho vinculado. Confira se o dispositivo apresentado
+                  corresponde ao ID que está na etiqueta do seu Colosys
+                  Sentinel.
+                </Bloco>
+
+                <Bloco titulo="Consultando as informações">
+                  Na plataforma, consulte os dados disponibilizados pelo
+                  dispositivo. Observe os valores apresentados, suas unidades e
+                  os horários das medições, quando essas informações estiverem
+                  disponíveis. Acompanhe as atualizações para identificar
+                  mudanças nas condições do ambiente.
+                </Bloco>
+
+                <Bloco titulo="Acompanhamento ao longo do tempo">
+                  Sempre que possível, consulte os registros em diferentes
+                  momentos. Comparar os dados ajuda a perceber variações que
+                  podem não ser evidentes em uma única leitura.
+                </Bloco>
+              </div>
+
+              <Aviso titulo="Sobre a disponibilidade dos dados">
+                A visualização depende do funcionamento do aparelho, da conexão
+                com a internet e da disponibilidade da plataforma. Se os dados
+                não estiverem atualizados, verifique a conexão antes de
+                considerar a última leitura como uma condição atual do ambiente.
               </Aviso>
             </section>
 
-            {/* MONITORAMENTO */}
+            {/* 04 - MONITORAMENTO */}
             <section id="monitoramento" className="mb-16 scroll-mt-8">
               <TituloSecao
-                numero="10"
-                titulo="Monitoramento dos dados"
-                descricao="Como interpretar as informações produzidas pelo ESP32."
+                numero="04"
+                titulo="Entendendo o monitoramento"
+                descricao="Conheça as informações coletadas pelo aparelho e o significado de cada medição."
               />
 
-              <Bloco titulo="Console Serial">
-                O monitor serial permite acompanhar informações importantes
-                durante a execução do programa, incluindo:
-                <ul className="mt-3 list-disc space-y-2 pl-5">
-                  <li>Estado da conexão Wi-Fi.</li>
-                  <li>Endereço IP recebido pelo ESP32.</li>
-                  <li>Estado da conexão MQTT.</li>
-                  <li>Leitura bruta e percentual do LDR.</li>
-                  <li>Temperatura e umidade.</li>
-                  <li>Comandos recebidos e respectivas respostas.</li>
-                </ul>
+              <div className="grid gap-4 md:grid-cols-3">
+                <CartaoDado
+                  icon="♨"
+                  titulo="Temperatura"
+                  valor="°C"
+                  descricao="Indica a temperatura do ar nas proximidades do aparelho."
+                />
+
+                <CartaoDado
+                  icon="◉"
+                  titulo="Umidade"
+                  valor="%"
+                  descricao="Representa a quantidade relativa de vapor de água presente no ar."
+                />
+
+                <CartaoDado
+                  icon="☼"
+                  titulo="Luminosidade"
+                  valor="%"
+                  descricao="Indica a intensidade luminosa conforme a escala utilizada pelo aparelho."
+                />
+              </div>
+
+              <div className="mt-5 space-y-4">
+                <Bloco titulo="Temperatura ambiente">
+                  A temperatura representa o nível de aquecimento do ar próximo
+                  ao sensor. Valores mais altos podem indicar maior aquecimento
+                  do ambiente, enquanto valores menores indicam condições mais
+                  frias.
+                </Bloco>
+
+                <Bloco titulo="Umidade relativa do ar">
+                  A umidade relativa indica quanto vapor de água existe no ar em
+                  relação à quantidade máxima que ele poderia conter naquela
+                  temperatura. Uma umidade elevada pode favorecer a sensação de
+                  abafamento e, dependendo das condições do local, contribuir
+                  para problemas relacionados à umidade.
+                </Bloco>
+
+                <Bloco titulo="Luminosidade">
+                  O sensor de luminosidade identifica a quantidade de luz
+                  recebida. Essa informação ajuda a observar se o ambiente está
+                  mais iluminado ou mais escuro ao longo do dia.
+                </Bloco>
+              </div>
+
+              <Aviso titulo="As medições representam o local do aparelho">
+                Os sensores monitoram as condições próximas ao ponto em que o
+                dispositivo está instalado. Portanto, os valores podem ser
+                diferentes em outros cômodos ou regiões do mesmo ambiente.
+              </Aviso>
+            </section>
+
+            {/* 05 - DADOS */}
+            <section id="dados" className="mb-16 scroll-mt-8">
+              <TituloSecao
+                numero="05"
+                titulo="Coleta e interpretação dos dados"
+                descricao="Entenda os limites dos sensores e como interpretar os valores registrados."
+              />
+
+              <Bloco titulo="Sensor de temperatura e umidade">
+                O Colosys Sentinel utiliza o sensor DHT11 para acompanhar duas
+                características do ambiente: temperatura e umidade relativa do
+                ar. Esse sensor possui limites próprios de medição. Por isso, é
+                importante conhecer sua faixa de funcionamento para interpretar
+                corretamente os resultados.
               </Bloco>
 
-              <Bloco titulo="Intervalos e parâmetros">
-                <div className="space-y-3">
-                  {[
-                    ["Telemetria", "2.000 ms"],
-                    ["Nova tentativa MQTT", "3.000 ms"],
-                    ["Nova tentativa Wi-Fi", "10.000 ms"],
-                    ["Velocidade Serial", "115200 baud"],
-                  ].map(([nome, valor]) => (
-                    <div
-                      key={nome}
-                      className="flex justify-between gap-3 border-b border-white/10 pb-2"
-                    >
-                      <span>{nome}</span>
-                      <span className="font-mono text-[#d5c578]">{valor}</span>
-                    </div>
-                  ))}
+              <div className="mt-5 grid gap-4 md:grid-cols-2">
+                <div className="rounded-xl border border-white/10 bg-[#ffffff05] p-5">
+                  <span className="text-xs font-bold tracking-widest text-[#a99a49]">
+                    TEMPERATURA
+                  </span>
+                  <p className="mt-4 text-3xl font-bold text-[#d5c578]">
+                    0 °C – 50 °C
+                  </p>
+                  <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/10">
+                    <div className="h-full w-full rounded-full bg-[#a99a49]" />
+                  </div>
+                  <p className="mt-3 text-xs leading-6 text-[#aaa68f]">
+                    Faixa de medição do sensor DHT11.
+                  </p>
+                  <p className="mt-2 text-xs text-[#c5c1ac]">
+                    Precisão aproximada: ±2 °C.
+                  </p>
                 </div>
+
+                <div className="rounded-xl border border-white/10 bg-[#ffffff05] p-5">
+                  <span className="text-xs font-bold tracking-widest text-[#a99a49]">
+                    UMIDADE RELATIVA
+                  </span>
+                  <p className="mt-4 text-3xl font-bold text-[#d5c578]">
+                    20% – 90%
+                  </p>
+                  <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/10">
+                    <div className="h-full w-full rounded-full bg-[#a99a49]" />
+                  </div>
+                  <p className="mt-3 text-xs leading-6 text-[#aaa68f]">
+                    Faixa de medição do sensor DHT11.
+                  </p>
+                  <p className="mt-2 text-xs text-[#c5c1ac]">
+                    Precisão aproximada: ±5 pontos percentuais.
+                  </p>
+                </div>
+              </div>
+
+              <Aviso titulo="Limites de medição" tipo="alerta">
+                Os valores apresentados são limites técnicos do DHT11, não metas
+                de conforto. Se a temperatura ou umidade ultrapassar a faixa
+                especificada, a leitura pode não representar corretamente a
+                condição real do ambiente.
+              </Aviso>
+
+              <div className="mt-6 space-y-3">
+                <Accordion
+                  id="temperatura"
+                  titulo="Como interpretar os valores de temperatura?"
+                >
+                  Observe a evolução da temperatura ao longo do tempo. Por
+                  exemplo, uma sequência de leituras crescentes pode indicar
+                  aquecimento do ambiente. Para uma análise mais confiável,
+                  compare os valores em horários semelhantes e considere fatores
+                  como incidência solar, ventilação e presença de equipamentos
+                  que geram calor.
+                </Accordion>
+
+                <Accordion
+                  id="umidade"
+                  titulo="Como interpretar os valores de umidade?"
+                >
+                  Observe se a umidade permanece estável ou apresenta variações
+                  significativas. Valores elevados e persistentes podem
+                  justificar uma verificação de ventilação, infiltrações ou
+                  outras fontes de umidade. Lembre-se de que o sensor possui uma
+                  tolerância aproximada de ±5 pontos percentuais.
+                </Accordion>
+
+                <Accordion
+                  id="luminosidade"
+                  titulo="Como interpretar a luminosidade?"
+                >
+                  O valor de luminosidade é apresentado em uma escala percentual
+                  normalizada pelo sistema. Ele serve para comparar ambientes e
+                  acompanhar variações de iluminação, mas não equivale a uma
+                  medição profissional em lux.
+                </Accordion>
+
+                <Accordion
+                  id="historico"
+                  titulo="Por que consultar o histórico de medições?"
+                >
+                  Uma leitura isolada mostra apenas uma condição momentânea. Ao
+                  comparar diferentes registros, você consegue identificar
+                  tendências, mudanças de temperatura, períodos de maior umidade
+                  e alterações na iluminação.
+                </Accordion>
+              </div>
+
+              <Bloco titulo="Boas práticas na análise dos dados">
+                <ul className="list-disc space-y-2 pl-5">
+                  <li>Considere sempre a data e o horário da leitura.</li>
+                  <li>Observe tendências, não apenas valores isolados.</li>
+                  <li>Compare medições realizadas em condições semelhantes.</li>
+                  <li>Considere a precisão e os limites dos sensores.</li>
+                  <li>
+                    Não interprete uma leitura fora da faixa como um valor
+                    exato.
+                  </li>
+                </ul>
               </Bloco>
             </section>
 
-            {/* PROBLEMAS */}
+            {/* 06 - ALERTAS */}
+            <section id="alertas" className="mb-16 scroll-mt-8">
+              <TituloSecao
+                numero="06"
+                titulo="Sistema de alertas"
+                descricao="Entenda a sinalização do aparelho e como utilizar os alertas disponíveis."
+              />
+
+              <Bloco titulo="Sinalização do aparelho">
+                O Colosys Sentinel possui indicadores visuais e sonoros que
+                podem ser utilizados para sinalizar a ativação do mecanismo de
+                alerta. Quando ativado, o aparelho utiliza o LED externo e o
+                buzzer para chamar a atenção do usuário.
+              </Bloco>
+
+              <div className="mt-5 grid gap-4 md:grid-cols-2">
+                <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5">
+                  <span className="text-xs font-bold tracking-widest text-emerald-400">
+                    ALERTA DESATIVADO
+                  </span>
+                  <div className="my-4 text-4xl">◉</div>
+                  <p className="text-sm font-bold">
+                    Estado normal de sinalização
+                  </p>
+                  <p className="mt-2 text-xs leading-6 text-[#aaa68f]">
+                    O LED externo e o sinal sonoro permanecem desligados.
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-5">
+                  <span className="text-xs font-bold tracking-widest text-amber-400">
+                    ALERTA ATIVADO
+                  </span>
+                  <div className="my-4 animate-pulse text-4xl">◉</div>
+                  <p className="text-sm font-bold">Sinalização ativa</p>
+                  <p className="mt-2 text-xs leading-6 text-[#aaa68f]">
+                    O LED pisca e o buzzer emite um sinal sonoro.
+                  </p>
+                </div>
+              </div>
+
+              <Aviso titulo="Atenção">
+                A sinalização visual e sonora indica que o mecanismo de alerta
+                foi ativado. Ela não representa, por si só, uma emergência
+                ambiental ou uma avaliação automática de risco.
+              </Aviso>
+
+              <Bloco titulo="Utilização pela plataforma">
+                Quando a funcionalidade de acionamento estiver disponível na
+                plataforma, utilize os controles correspondentes para ativar ou
+                desativar o alerta. Após enviar um comando, aguarde a
+                confirmação de execução antes de considerar a operação
+                concluída.
+              </Bloco>
+            </section>
+
+            {/* 07 - POSICIONAMENTO */}
+            <section id="instalacao" className="mb-16 scroll-mt-8">
+              <TituloSecao
+                numero="07"
+                titulo="Posicionamento do aparelho"
+                descricao="Escolha um local adequado para obter medições mais representativas do ambiente."
+              />
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <Bloco titulo="Onde instalar">
+                  <ul className="list-disc space-y-2 pl-5">
+                    <li>Em um local com circulação natural de ar.</li>
+                    <li>Em uma superfície estável e segura.</li>
+                    <li>Em uma região representativa do ambiente.</li>
+                    <li>Em local protegido de respingos de água.</li>
+                    <li>Em uma posição que permita a ventilação do sensor.</li>
+                  </ul>
+                </Bloco>
+
+                <Bloco titulo="Onde evitar instalar">
+                  <ul className="list-disc space-y-2 pl-5">
+                    <li>Próximo a fogões ou aquecedores.</li>
+                    <li>Diretamente sob luz solar intensa.</li>
+                    <li>Próximo a janelas com incidência solar direta.</li>
+                    <li>Em locais com vapor ou respingos frequentes.</li>
+                    <li>Em espaços fechados sem circulação de ar.</li>
+                  </ul>
+                </Bloco>
+              </div>
+
+              <Aviso titulo="A posição influencia as medições">
+                Instalar o aparelho próximo a fontes de calor, janelas,
+                equipamentos eletrônicos ou locais com pouca ventilação pode
+                provocar leituras diferentes das condições gerais do ambiente.
+              </Aviso>
+
+              <Bloco titulo="Uma recomendação importante">
+                Depois de escolher o local, mantenha o aparelho na mesma posição
+                sempre que possível. Isso facilita a comparação dos registros e
+                permite acompanhar mudanças ambientais com maior consistência.
+              </Bloco>
+            </section>
+
+            {/* 08 - CUIDADOS */}
+            <section id="cuidados" className="mb-16 scroll-mt-8">
+              <TituloSecao
+                numero="08"
+                titulo="Cuidados e conservação"
+                descricao="Práticas simples para preservar seu aparelho e manter seu funcionamento."
+              />
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <Bloco titulo="Cuidados físicos">
+                  <ul className="list-disc space-y-2 pl-5">
+                    <li>Evite quedas e impactos.</li>
+                    <li>Não desmonte o aparelho.</li>
+                    <li>Evite contato direto com líquidos.</li>
+                    <li>Não obstrua as aberturas de ventilação.</li>
+                    <li>Mantenha o aparelho longe de poeira excessiva.</li>
+                    <li>Não exponha o dispositivo ao calor extremo.</li>
+                  </ul>
+                </Bloco>
+
+                <Bloco titulo="Cuidados durante a utilização">
+                  <ul className="list-disc space-y-2 pl-5">
+                    <li>Utilize uma alimentação elétrica adequada.</li>
+                    <li>Evite desconectar o aparelho desnecessariamente.</li>
+                    <li>Confira periodicamente o estado da conexão.</li>
+                    <li>Mantenha o acesso à plataforma disponível.</li>
+                    <li>Preserve a etiqueta com o QR Code e o ID.</li>
+                    <li>Não compartilhe suas credenciais de acesso.</li>
+                  </ul>
+                </Bloco>
+              </div>
+
+              <Bloco titulo="Limpeza">
+                Antes de realizar qualquer limpeza, desconecte o aparelho da
+                alimentação elétrica. Utilize um pano macio e seco para remover
+                poeira da parte externa. Não utilize água diretamente, produtos
+                químicos ou objetos pontiagudos. Não aplique força sobre os
+                sensores.
+              </Bloco>
+
+              <Aviso titulo="Preservação do dispositivo" tipo="alerta">
+                O aparelho contém componentes eletrônicos sensíveis. Não tente
+                realizar reparos, alterações ou substituições internas sem
+                orientação de uma pessoa responsável pela manutenção.
+              </Aviso>
+            </section>
+
+            {/* 09 - PROBLEMAS */}
             <section id="problemas" className="mb-16 scroll-mt-8">
               <TituloSecao
-                numero="11"
-                titulo="Solução de problemas"
-                descricao="Orientações para identificar e corrigir falhas comuns durante a execução."
+                numero="09"
+                titulo="Dúvidas frequentes"
+                descricao="Confira orientações para situações comuns durante a utilização do Colosys Sentinel."
               />
 
               <div className="space-y-3">
-                <Accordion id="erro1" titulo="O ESP32 não conecta ao Wi-Fi">
-                  Verifique se o nome da rede e a senha estão corretos. No
-                  Wokwi, utilize Wokwi-GUEST e senha vazia. Reinicie a simulação
-                  e confira as mensagens no console Serial.
+                <Accordion
+                  id="erro1"
+                  titulo="Não consigo acessar o site pelo QR Code"
+                >
+                  Verifique se a câmera do celular consegue identificar o
+                  código. Se necessário, tente utilizar outro leitor de QR Code
+                  ou acesse diretamente o endereço da plataforma do projeto.
                 </Accordion>
 
                 <Accordion
                   id="erro2"
-                  titulo="O ESP32 conecta ao Wi-Fi, mas não ao MQTT"
+                  titulo="Meu aparelho não aparece na conta"
                 >
-                  Verifique o endereço IP do broker, a porta 1883 e a
-                  disponibilidade do servidor. Certifique-se de que o endereço é
-                  acessível pela rede utilizada e de que o broker está em
-                  execução.
+                  Confira se você informou corretamente o ID presente na
+                  etiqueta do aparelho. Verifique também se o cadastro foi
+                  concluído. Se o problema persistir, entre em contato com o
+                  suporte responsável.
+                </Accordion>
+
+                <Accordion id="erro3" titulo="Os dados não estão atualizando">
+                  Verifique sua conexão com a internet e atualize a página da
+                  plataforma. Se as informações continuarem sem atualização,
+                  pode haver uma interrupção na comunicação do aparelho ou na
+                  disponibilidade do serviço.
+                </Accordion>
+
+                <Accordion id="erro4" titulo="A temperatura parece incorreta">
+                  Confira se o aparelho está próximo de fontes de calor, janelas
+                  ou incidência solar direta. Lembre-se de que o DHT11 possui
+                  precisão aproximada de ±2 °C. Caso a leitura esteja fora da
+                  faixa de 0 °C a 50 °C, ela não deve ser considerada confiável.
                 </Accordion>
 
                 <Accordion
-                  id="erro3"
-                  titulo="O sensor DHT22 não apresenta leituras"
+                  id="erro5"
+                  titulo="A umidade apresenta valores inesperados"
                 >
-                  Confira a ligação do pino de dados no GPIO 4, a alimentação e
-                  o tipo de sensor definido no código. Verifique também se a
-                  biblioteca DHT e a Adafruit Unified Sensor estão instaladas.
+                  Verifique se o aparelho está próximo de vapor, líquidos ou
+                  fontes localizadas de umidade. O DHT11 possui faixa de medição
+                  de 20% a 90%, com precisão aproximada de ±5 pontos
+                  percentuais.
                 </Accordion>
 
-                <Accordion
-                  id="erro4"
-                  titulo="A luminosidade apresenta valores incorretos"
-                >
-                  Verifique a calibração LDR_RAW_MIN e LDR_RAW_MAX e a
-                  configuração LDR_INVERTED. A orientação do sinal pode variar
-                  de acordo com o módulo utilizado.
-                </Accordion>
-
-                <Accordion id="erro5" titulo="O LED ou buzzer não funciona">
-                  Confira as conexões GPIO 26 e GPIO 27, respectivamente.
-                  Verifique também a configuração BUZZER_ENABLED e
-                  BUZZER_PASSIVE.
-                </Accordion>
-
-                <Accordion
-                  id="erro6"
-                  titulo="Os comandos on e off não são executados"
-                >
-                  Confira a inscrição no tópico cmd, a API_KEY, o DEVICE_ID e o
-                  formato da mensagem recebida. Verifique se o comando pertence
-                  ao dispositivo correto.
+                <Accordion id="erro6" titulo="O aparelho parou de funcionar">
+                  Verifique se a alimentação elétrica está conectada
+                  corretamente. Não abra o dispositivo nem tente modificar seus
+                  componentes. Se o problema persistir, solicite assistência
+                  técnica.
                 </Accordion>
 
                 <Accordion
                   id="erro7"
-                  titulo="Os comandos ficam pendentes no FIWARE"
+                  titulo="O QR Code ou a etiqueta está danificado"
                 >
-                  Verifique se a resposta está sendo publicada no tópico cmdexe.
-                  O programa utiliza uma confirmação após o processamento dos
-                  comandos reconhecidos.
+                  Entre em contato com o responsável pelo fornecimento do
+                  aparelho para solicitar orientação sobre a identificação do
+                  dispositivo.
+                </Accordion>
+
+                <Accordion
+                  id="erro8"
+                  titulo="O alerta sonoro ou visual não funciona"
+                >
+                  Confira se o aparelho está alimentado e conectado. Se a
+                  sinalização continuar sem funcionar, solicite uma verificação
+                  técnica.
                 </Accordion>
               </div>
-            </section>
 
-            {/* MANUTENÇÃO */}
-            <section id="manutencao" className="mb-16 scroll-mt-8">
-              <TituloSecao
-                numero="12"
-                titulo="Manutenção e recomendações"
-                descricao="Boas práticas para preservar o funcionamento e a confiabilidade do sistema."
-              />
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <Bloco titulo="Cuidados com o hardware">
-                  <ul className="list-disc space-y-2 pl-5">
-                    <li>Verificar periodicamente as conexões.</li>
-                    <li>Evitar curtos-circuitos.</li>
-                    <li>Utilizar alimentação compatível com os componentes.</li>
-                    <li>Proteger o circuito contra umidade e poeira.</li>
-                    <li>Conferir o estado dos cabos e sensores.</li>
-                  </ul>
-                </Bloco>
-
-                <Bloco titulo="Cuidados com o software">
-                  <ul className="list-disc space-y-2 pl-5">
-                    <li>Manter as bibliotecas atualizadas.</li>
-                    <li>Preservar uma cópia do código-fonte.</li>
-                    <li>Testar alterações antes de utilizá-las.</li>
-                    <li>Proteger as credenciais de acesso.</li>
-                    <li>Monitorar a estabilidade da comunicação.</li>
-                  </ul>
-                </Bloco>
+              <div className="mt-6 rounded-xl border border-[#a99a49]/30 bg-[#a99a49]/5 p-6">
+                <span className="text-xs font-bold tracking-widest text-[#a99a49]">
+                  PRECISA DE AJUDA?
+                </span>
+                <h3 className="mt-3 text-xl font-bold">
+                  Conte com o suporte Colosys.
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-[#aaa68f]">
+                  Se você não conseguir resolver algum problema seguindo este
+                  manual, procure o responsável pelo fornecimento ou suporte do
+                  projeto.
+                </p>
+                <p className="mt-3 text-xs text-[#c5b66a]">
+                  Tenha em mãos o ID do seu aparelho e uma descrição do problema
+                  encontrado.
+                </p>
               </div>
-
-              <Aviso titulo="Segurança e confiabilidade" tipo="alerta">
-                A configuração apresentada utiliza MQTT na porta 1883 e não
-                demonstra autenticação ou criptografia no código
-                disponibilizado. Para implantação em ambiente real, recomenda-se
-                avaliar autenticação, TLS, controle de acesso e armazenamento
-                seguro das credenciais.
-              </Aviso>
             </section>
 
-            {/* REFERÊNCIAS */}
+            {/* REFERÊNCIAS E RODAPÉ */}
             <footer className="border-t border-white/10 pt-8">
               <span className="text-xs font-bold tracking-[0.25em] text-[#a99a49]">
-                DOCUMENTAÇÃO E REFERÊNCIAS
+                COLOSYS SENTINEL
               </span>
 
-              <h2 className="mt-3 text-2xl font-bold">Explore o projeto.</h2>
+              <h2 className="mt-3 text-2xl font-bold">
+                Seu ambiente, sob acompanhamento.
+              </h2>
 
               <p className="mt-3 max-w-xl text-sm leading-7 text-[#aaa68f]">
-                Consulte os recursos originais para acessar o código-fonte, a
-                simulação eletrônica e os arquivos utilizados no desenvolvimento
-                do Colosys Sentinel.
+                O Colosys Sentinel foi desenvolvido para facilitar o
+                acompanhamento das condições ambientais. Utilize a plataforma
+                regularmente e siga as recomendações deste manual para
+                aproveitar melhor seu dispositivo.
               </p>
 
               <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -958,10 +860,10 @@ const uint32_t BLINK_HALF_PERIOD_MS = 500;`}</Codigo>
                   rel="noreferrer"
                   className="rounded-xl border border-white/10 bg-[#ffffff05] p-5 transition hover:border-[#a99a49]/50"
                 >
-                  <span className="text-xs text-[#a99a49]">01 / SOFTWARE</span>
-                  <h3 className="mt-3 font-bold">GitHub Repository ↗</h3>
+                  <span className="text-xs text-[#a99a49]">01 / PROJETO</span>
+                  <h3 className="mt-3 font-bold">Projeto Colosys ↗</h3>
                   <p className="mt-2 text-xs leading-6 text-[#aaa68f]">
-                    Código-fonte do cliente Colosys Lamp.
+                    Consulte o repositório oficial do projeto.
                   </p>
                 </a>
 
@@ -971,17 +873,17 @@ const uint32_t BLINK_HALF_PERIOD_MS = 500;`}</Codigo>
                   rel="noreferrer"
                   className="rounded-xl border border-white/10 bg-[#ffffff05] p-5 transition hover:border-[#a99a49]/50"
                 >
-                  <span className="text-xs text-[#a99a49]">02 / HARDWARE</span>
-                  <h3 className="mt-3 font-bold">Wokwi Simulation ↗</h3>
+                  <span className="text-xs text-[#a99a49]">02 / SIMULAÇÃO</span>
+                  <h3 className="mt-3 font-bold">Projeto eletrônico ↗</h3>
                   <p className="mt-2 text-xs leading-6 text-[#aaa68f]">
-                    Circuito eletrônico e programação do ESP32.
+                    Consulte a simulação original do dispositivo.
                   </p>
                 </a>
               </div>
 
               <div className="mt-12 flex flex-col justify-between gap-4 border-t border-white/10 pt-6 text-[10px] tracking-widest text-[#77735e] md:flex-row">
                 <span>COLOSYS SENTINEL © 2026</span>
-                <span>DOCUMENTAÇÃO TÉCNICA • VERSÃO 1.0</span>
+                <span>MANUAL DO USUÁRIO • VERSÃO 1.0</span>
               </div>
             </footer>
           </div>
