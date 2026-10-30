@@ -32,9 +32,9 @@ const reducer = (state, action) => {
   }
 };
 
-const parse = (event) => {
+const parse = (eventData) => {
   try {
-    return JSON.parse(event.data);
+    return JSON.parse(eventData);
   } catch {
     return null;
   }
@@ -46,71 +46,105 @@ export const useLampStream = () => {
 
   useEffect(() => {
     let active = true;
-    let es = null;
     let timer = null;
     let attempt = 0;
+    let abortController = null;
 
-    const connect = () => {
-      // withCredentials: o navegador envia o cookie httpOnly do login (necessário entre origens diferentes).
-      es = new EventSource(`${API_URL}/api/lamps/stream`, {
-        withCredentials: true,
-      });
+    const connect = async () => {
+      if (!active) return;
 
-      es.onopen = () => {
-        attempt = 0;
-        setStatus("open");
-      };
+      abortController = new AbortController();
 
-      // O servidor usa eventos NOMEADOS ("event: snapshot"). Para eles, `es.onmessage` NÃO dispara:
-      // é preciso addEventListener com o mesmo nome.
-      es.addEventListener("snapshot", (e) => {
-        const lamps = parse(e);
-        if (Array.isArray(lamps)) dispatch({ type: "snapshot", lamps });
-      });
+      try {
+        const response = await fetch(`${API_URL}/api/lamps/stream`, {
+          method: "GET",
+          credentials: "include", // Envia o cookie httpOnly do login
+          headers: {
+            "Accept": "text/event-stream",
+            "ngrok-skip-browser-warning": "true", // Bypassa a página de aviso do ngrok
+          },
+          signal: abortController.signal,
+        });
 
-      es.addEventListener("reading", (e) => {
-        const lamp = parse(e);
-        if (lamp?.deviceId) dispatch({ type: "reading", lamp });
-      });
-
-      es.addEventListener("upsert", (e) => {
-        const lamp = parse(e);
-        if (lamp?.deviceId) dispatch({ type: "upsert", lamp });
-      });
-
-      es.addEventListener("delete", (e) => {
-        const data = parse(e);
-        const deviceId = data?.deviceId ?? data?.id;
-
-        if (deviceId) dispatch({ type: "delete", deviceId });
-      });
-
-      es.onerror = async () => {
-        if (!active) return;
-
-        if (es.readyState === EventSource.CONNECTING) {
-          // Conexão caiu (rede, servidor reiniciando): o navegador reconecta sozinho, e o servidor
-          // manda um snapshot novo ao conectar, que corrige qualquer leitura perdida.
-          setStatus("reconnecting");
-          return;
+        if (!response.ok) {
+          if (response.status === 401) {
+            const res = await getMe().catch(() => null);
+            if (!active) return;
+            if (res && res.status === 401) {
+              setStatus("unauthorized");
+              return;
+            }
+          }
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // CLOSED: o navegador desistiu de vez. Isso acontece com QUALQUER resposta diferente de 200:
-        // 401 (sessão expirou), mas também 502/503 de um proxy ou do servidor ainda iniciando.
-        // EventSource não informa o código, então perguntamos ao servidor se a sessão ainda vale.
-        const res = await getMe().catch(() => null);
+        attempt = 0;
+        setStatus("open");
 
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (active) {
+          const { value, done } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const parts = buffer.split("\n\n");
+          buffer = parts.pop();
+
+          for (const part of parts) {
+            let eventName = "message";
+            let dataLines = [];
+
+            const lines = part.split("\n");
+            for (const line of lines) {
+              if (line.startsWith("event:")) {
+                eventName = line.replace("event:", "").trim();
+              } else if (line.startsWith("data:")) {
+                dataLines.push(line.replace("data:", "").trim());
+              } else if (line.startsWith("data ")) {
+                dataLines.push(line.replace("data ", "").trim());
+              }
+            }
+
+            if (dataLines.length > 0) {
+              const dataString = dataLines.join("\n");
+
+              if (eventName === "snapshot") {
+                const lamps = parse(dataString);
+                if (Array.isArray(lamps)) dispatch({ type: "snapshot", lamps });
+              } else if (eventName === "reading") {
+                const lamp = parse(dataString);
+                if (lamp?.deviceId) dispatch({ type: "reading", lamp });
+              } else if (eventName === "upsert") {
+                const lamp = parse(dataString);
+                if (lamp?.deviceId) dispatch({ type: "upsert", lamp });
+              } else if (eventName === "delete") {
+                const data = parse(dataString);
+                const deviceId = data?.deviceId ?? data?.id;
+                if (deviceId) dispatch({ type: "delete", deviceId });
+              }
+            }
+          }
+        }
+      } catch (error) {
+        if (!active || error.name === "AbortError") return;
+
+        setStatus("reconnecting");
+
+        // Verifica se a sessão expirou
+        const res = await getMe().catch(() => null);
         if (!active) return;
 
         if (res && res.status === 401) {
-          setStatus("unauthorized"); // sem nova tentativa: é preciso entrar de novo
+          setStatus("unauthorized");
           return;
         }
 
-        setStatus("reconnecting");
-        const delay = Math.min(1000 * 2 ** attempt++, 30_000); // 1 s, 2 s, 4 s ... até 30 s
+        const delay = Math.min(1000 * 2 ** attempt++, 30_000); // 1s, 2s, 4s ... até 30s
         timer = setTimeout(connect, delay);
-      };
+      }
     };
 
     connect();
@@ -118,7 +152,7 @@ export const useLampStream = () => {
     return () => {
       active = false;
       clearTimeout(timer);
-      es?.close();
+      abortController?.abort();
     };
   }, []);
 
