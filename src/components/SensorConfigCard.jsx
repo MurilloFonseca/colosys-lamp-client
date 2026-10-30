@@ -1,4 +1,10 @@
+import { C_to_F } from "../helpers/temperature";
+
 const SensorConfigCard = ({ sensor, config, alterarValor }) => {
+  const unidade = localStorage.getItem("unidade-temperatura") ?? "C";
+
+  const mudar = sensor.nome === "Temperatura" && unidade === "F";
+
   return (
     <section
       key={sensor.id}
@@ -37,14 +43,16 @@ const SensorConfigCard = ({ sensor, config, alterarValor }) => {
               id={`${sensor.id}-min`}
               type="number"
               step="any"
-              value={config[sensor.id].min}
+              value={
+                mudar ? C_to_F(config[sensor.id].min) : config[sensor.id].min
+              }
               onChange={(e) => alterarValor(sensor.id, "min", e.target.value)}
               className="w-full min-w-0 bg-transparent px-4 py-3 text-base text-white outline-none"
               required
             />
 
             <span className="px-4 text-sm text-amarelo-claro/70">
-              {sensor.unidade}
+              {sensor.nome === "Temperatura" ? `°${unidade}` : sensor.unidade}
             </span>
           </div>
         </div>
@@ -61,14 +69,16 @@ const SensorConfigCard = ({ sensor, config, alterarValor }) => {
               id={`${sensor.id}-max`}
               type="number"
               step="any"
-              value={config[sensor.id].max}
+              value={
+                mudar ? C_to_F(config[sensor.id].max) : config[sensor.id].max
+              }
               onChange={(e) => alterarValor(sensor.id, "max", e.target.value)}
               className="w-full min-w-0 bg-transparent px-4 py-3 text-base text-white outline-none"
               required
             />
 
             <span className="px-4 text-sm text-amarelo-claro/70">
-              {sensor.unidade}
+              {sensor.nome === "Temperatura" ? `°${unidade}` : sensor.unidade}
             </span>
           </div>
         </div>

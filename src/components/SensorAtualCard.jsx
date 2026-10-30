@@ -19,7 +19,7 @@ const SensorAtualCard = ({ nome, valor, cor, largura }) => {
 
       <div className="mt-6 flex items-baseline gap-1">
         <span className="font-['Playfair_Display'] text-3xl font-semibold text-amarelo-claro sm:text-4xl">
-          {unidade === "C" ? valorNum : C_to_F(valorNum)}
+          {(nome === "Temperatura" && unidade === "F") ? C_to_F(valorNum) : valorNum}
         </span>
 
         <span className="text-sm text-texto/45">

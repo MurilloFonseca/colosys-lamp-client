@@ -3,12 +3,17 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import logoImg from "/assets/logo.png";
 import sidebarButtons from "../data/sidebarButtons";
+import { useAuth } from "../hooks/authProvider";
+import Loading from "../components/Loading";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const [isOpen, setIsOpen] = useState(false);
+  const { isLoading, isAuthenticated, logout, user } = useAuth();
+
+  const [openPathname, setOpenPathname] = useState(null);
+  const isOpen = openPathname === pathname;
 
   const estiloBotao = (nome) =>
     `flex w-full max-w-50 cursor-pointer items-center justify-center rounded-xl border py-2 font-['Playfair_Display'] font-medium text-amarelo-claro shadow transition-all duration-300 hover:border-amarelo-claro hover:shadow-[0_0_15px_rgba(234,179,8,0.2)] ${
@@ -17,19 +22,30 @@ const Sidebar = () => {
         : "border-amarelo-claro/10"
     }`;
 
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
+
+  if (isLoading) return <Loading />;
+
+  if (!isAuthenticated) navigate("/login");
+
   return (
-    <div className="flex w-screen h-screen bg-black">
+    <div className="min-h-screen flex w-full overflow-x-hidden bg-black">
+      {/* Overlay para fechar no mobile quando aberto */}
       {isOpen && (
         <div
-          onClick={() => setIsOpen(false)}
-          className="fixed inset-0 z-90 bg- black/50 transition-all duration-300"
+          onClick={() => setOpenPathname(null)}
+          className="fixed inset-0 z-40 bg-black/50 transition-all duration-300 md:hidden"
           aria-hidden="true"
         />
       )}
 
       <aside
-        className={`left-0 top-0 z-100 flex h-screen flex-col justify-between rounded-r-lg bg-linear-to-br from-amarelo-mostarda to-black p-3 text-texto shadow-lg transition-[width] duration-300 ${
-          isOpen ? "w-65" : "w-16"
+        className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col justify-between rounded-r-lg bg-linear-to-br from-amarelo-mostarda to-black p-3 text-texto shadow-lg transition-all duration-300 ${
+          isOpen
+            ? "w-65 translate-x-0"
+            : "w-16 -translate-x-full md:translate-x-0"
         }`}
       >
         {/* Logo e botão do menu */}
@@ -38,19 +54,19 @@ const Sidebar = () => {
             <div className="flex min-w-0 items-center gap-2 overflow-hidden">
               <img
                 src={logoImg}
-                alt="Logo Vinheria Agnello"
+                alt="Logo Colosys"
                 className="h-6 w-6 shrink-0 object-contain"
               />
 
               <h1 className="truncate font-['Marcellus'] text-[16px] tracking-widest">
-                Vinheria Agnello
+                Colosys Sentinel
               </h1>
             </div>
           )}
 
           <button
             type="button"
-            onClick={() => setIsOpen((atual) => !atual)}
+            onClick={() => setOpenPathname(isOpen ? null : pathname)}
             className="flex shrink-0 cursor-pointer items-center justify-center rounded-lg border border-amarelo-claro/10 p-2.5 text-amarelo-claro shadow transition-all duration-300 hover:border-amarelo-claro hover:shadow-[0_0_15px_rgba(234,179,8,0.2)]"
             aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
             aria-expanded={isOpen}
@@ -65,7 +81,7 @@ const Sidebar = () => {
             <button
               key={path}
               type="button"
-              onClick={() => navigate(path)}
+              onClick={() => handleNavigation(path)}
               className={estiloBotao(path)}
               title={title}
               aria-current={pathname === path ? "page" : undefined}
@@ -90,12 +106,15 @@ const Sidebar = () => {
           {isOpen && (
             <div className="flex min-w-0 flex-1 flex-col gap-2 overflow-hidden">
               <h2 className="truncate font-['Playfair_Display'] font-semibold italic text-texto">
-                User
+                {user.username}
               </h2>
 
-              <p className="truncate font-light italic">Administrador</p>
+              <p className="truncate font-light italic">{user.email}</p>
               <div className="pl-18">
-                <button className="w-20 cursor-pointer rounded-xl border border-amarelo-claro/40 bg-preto-transparente font-['Playfair_Display'] text-sm font-medium text-amarelo-claro shadow transition-all duration-300 hover:border-amarelo-claro hover:shadow-[0_0_15px_rgba(234,179,8,0.2)]">
+                <button
+                  onClick={logout}
+                  className="w-20 cursor-pointer rounded-xl border border-amarelo-claro/40 bg-preto-transparente font-['Playfair_Display'] text-sm font-medium text-amarelo-claro shadow transition-all duration-300 hover:border-amarelo-claro hover:shadow-[0_0_15px_rgba(234,179,8,0.2)]"
+                >
                   Sair
                 </button>
               </div>
@@ -104,7 +123,19 @@ const Sidebar = () => {
         </div>
       </aside>
 
-      <main className="w-full min-h-screen">
+      <main className="min-h-screen min-w-0 w-full flex-1 md:ml-16 transition-all duration-300 overflow-x-hidden">
+        {/* Botão flutuante extra para abrir o menu em dispositivos móveis caso esteja oculto */}
+        {!isOpen && (
+          <button
+            type="button"
+            onClick={() => setOpenPathname(pathname)}
+            className="fixed left-4 top-4 z-30 flex md:hidden cursor-pointer items-center justify-center rounded-lg border border-amarelo-claro/20 bg-black/80 p-3 text-amarelo-claro shadow-lg backdrop-blur-md transition-all duration-300 hover:border-amarelo-claro"
+            aria-label="Abrir menu"
+          >
+            <i className="fa-solid fa-bars-staggered text-lg" />
+          </button>
+        )}
+
         <Outlet />
       </main>
     </div>

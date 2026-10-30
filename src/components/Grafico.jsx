@@ -1,4 +1,16 @@
-const Grafico = ({ nome, descricao, cor }) => {
+import Plot from "react-plotly.js";
+
+const Grafico = ({ nome, descricao, cor, x, y }) => {
+  const data = [
+    {
+      x,
+      y,
+      type: "scatter",
+      mode: "lines+markers",
+      marker: { color: cor },
+    },
+  ];
+
   return (
     <article className="flex min-h-72 min-w-0 flex-col rounded-2xl border border-amarelo-claro/15 bg-[#11110f] p-5 shadow-lg transition-all duration-300 hover:border-amarelo-claro/30 sm:p-6 w-full">
       <div className="flex items-center gap-3">
@@ -12,17 +24,20 @@ const Grafico = ({ nome, descricao, cor }) => {
       </div>
 
       <div className="mt-6 flex min-h-48 flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-amarelo-claro/15 bg-black/20 px-4 py-8 text-center">
-        <span className={`font-['Playfair_Display'] text-lg italic ${cor}`}>
-          {nome}
-        </span>
-
-        <span className="mt-2 text-sm text-texto/55">
-          Gráfico de {nome.toLowerCase()}
-        </span>
-
-        <span className="mt-2 rounded-full border border-white/5 px-3 py-1 text-[10px] uppercase tracking-widest text-texto/30">
-          Aguardando integração
-        </span>
+        <Plot
+          data={data}
+          layout={{
+            font: { color: "#fff0ad" },
+            plot_bgcolor: "rgba(0, 0, 0, 0.2)",
+            paper_bgcolor: "rgba(0, 0, 0, 0.2)",
+            xaxis: {
+              gridcolor: "rgba(255, 240, 173, 0.3)",
+            },
+            yaxis: {
+              gridcolor: "rgba(255, 240, 173, 0.3)",
+            },
+          }}
+        />
       </div>
     </article>
   );

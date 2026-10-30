@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/authProvider";
+import Loading from "../components/Loading";
+import { registerUser } from "../api/endpoints/auth";
 
 const Cadastro = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const { isLoading, isAuthenticated, login } = useAuth();
 
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
@@ -10,7 +15,7 @@ const Cadastro = () => {
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
 
-  const cadastrarUsuario = (e) => {
+  const cadastrarUsuario = async (e) => {
     e.preventDefault();
 
     setErro("");
@@ -33,8 +38,19 @@ const Cadastro = () => {
       return;
     }
 
-    navigate("/")
+    try {
+      await registerUser(nome, email, senha);
+      await login(email, senha);
+      navigate("/");
+    } catch {
+      setSenha("");
+      setErro("Erro ao cadastrar usuário");
+    }
   };
+
+  if (isLoading) return <Loading />;
+
+  if (isAuthenticated) navigate("/");
 
   return (
     <section className="min-h-screen bg-black px-5 py-10 text-texto sm:px-8 lg:px-12">
@@ -42,7 +58,7 @@ const Cadastro = () => {
         {/* Cabeçalho */}
         <header className="mb-10 text-center">
           <h1 className="font-['Marcellus'] mt-3 text-3xl text-amarelo-claro sm:text-4xl">
-            Cadastro
+            Colosys Sentinel
           </h1>
 
           <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-texto/50">
@@ -53,7 +69,7 @@ const Cadastro = () => {
         </header>
 
         {/* Formulário */}
-        <div className="rounded-2xl border border-amarelo-claro/15 bg-[#11110f] p-5 shadow-lg sm:p-8">
+        <div className="mx-auto w-full max-w-xl rounded-2xl border border-amarelo-claro/15 bg-[#11110f] p-5 shadow-lg sm:p-8">
           <h2 className="font-['Playfair_Display'] text-xl italic text-amarelo-claro">
             Nova conta
           </h2>
@@ -149,7 +165,24 @@ const Cadastro = () => {
               Criar conta
             </button>
           </form>
+
+          <div className="mt-7 border-t border-amarelo-claro/10 pt-6 text-center">
+            <p className="text-sm text-texto/50">Já tem uma conta?</p>
+
+            <button
+              type="button"
+              onClick={() => navigate("/login")}
+              className="mt-3 w-full rounded-xl border border-amarelo-claro/20 px-5 py-3 font-['Playfair_Display'] text-amarelo-claro transition duration-700 hover:border-amarelo-claro hover:bg-amarelo-claro/5"
+            >
+              Entrar
+            </button>
+          </div>
         </div>
+
+        {/* Rodapé */}
+        <p className="mt-8 text-center text-xs text-texto/30">
+          COLOSYS SENTINEL · SISTEMA DE MONITORAMENTO DE ECOSSISTEMAS
+        </p>
       </div>
     </section>
   );
