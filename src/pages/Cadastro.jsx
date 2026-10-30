@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/authProvider";
+import { useAuth } from "../hooks/AuthProvider";
 import Loading from "../components/Loading";
 import { registerUser } from "../api/endpoints/auth";
 

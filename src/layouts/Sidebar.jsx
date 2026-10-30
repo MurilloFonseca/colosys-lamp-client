@@ -3,7 +3,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import logoImg from "/assets/logo.png";
 import sidebarButtons from "../data/sidebarButtons";
-import { useAuth } from "../hooks/authProvider";
+import { useAuth } from "../hooks/AuthProvider";
 import Loading from "../components/Loading";
 
 const Sidebar = () => {
