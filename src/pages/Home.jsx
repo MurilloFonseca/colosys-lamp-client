@@ -1,60 +1,12 @@
 import CardLamp from "../components/CardLamp";
 import { useNavigate } from "react-router-dom";
+import { useLampStream } from "../hooks/useLampStream";
 
-// MOCK
-const lamps = [
-  {
-    deviceId: "Lamp127",
-    name: "Lamp 01",
-    state: "off",
-    luminosity: 55.0,
-    temperature: 24.4,
-    humidity: 53.0,
-  },
-  {
-    deviceId: "Lamp67",
-    name: "Lampada teste",
-    state: "on",
-    luminosity: 52.0,
-    temperature: 24.2,
-    humidity: 57.0,
-  },
-  {
-    deviceId: "Lamp127",
-    name: "Lamp 01",
-    state: "off",
-    luminosity: 55.0,
-    temperature: 24.4,
-    humidity: 53.0,
-  },
-  {
-    deviceId: "Lamp67",
-    name: "Lampada teste",
-    state: "on",
-    luminosity: 52.0,
-    temperature: 24.2,
-    humidity: 57.0,
-  },
-  {
-    deviceId: "Lamp127",
-    name: "Lamp 01",
-    state: "off",
-    luminosity: 55.0,
-    temperature: 24.4,
-    humidity: 53.0,
-  },
-  {
-    deviceId: "Lamp67",
-    name: "Lampada teste",
-    state: "on",
-    luminosity: 52.0,
-    temperature: 24.2,
-    humidity: 57.0,
-  },
-];
 
 const Home = () => {
   const navigate = useNavigate();
+
+  const { lamps } = useLampStream();
 
   return (
     <div className="min-h-screen w-full bg-linear-to-br from-black via-zinc-950 to-black text-texto">

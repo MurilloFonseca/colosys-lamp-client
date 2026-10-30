@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { createLamp } from "../api/endpoints/lamp";
 
 const CadastrarLampada = () => {
   const navigate = useNavigate();
@@ -8,10 +9,7 @@ const CadastrarLampada = () => {
   const [nome, setNome] = useState("");
   const [erro, setErro] = useState("");
 
-  // TODO: integrar
-  const onSalvar = () => {};
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const idLimpo = id.trim();
@@ -22,15 +20,12 @@ const CadastrarLampada = () => {
       return;
     }
 
-    onSalvar({
-      id: idLimpo,
-      nome: nomeLimpo,
-      ligada: false,
-      alerta: false,
-      umidade: 0,
-      luz: 0,
-      temperatura: 0,
-    });
+    try {
+      await createLamp(idLimpo, nomeLimpo);
+      navigate(-1)
+    } catch {
+      setErro("Algo deu errado! Tente novamente")
+    }
   };
 
   return (
@@ -111,7 +106,7 @@ const CadastrarLampada = () => {
             />
 
             <p className="mt-2 text-xs text-texto/40">
-              Use um identificador único para cada lâmpada.
+              Coloque o ID presente no seu equipamento.
             </p>
           </div>
 

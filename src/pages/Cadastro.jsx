@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/authProvider";
+import Loading from "../components/Loading";
+import { registerUser } from "../api/endpoints/auth";
 
 const Cadastro = () => {
   const navigate = useNavigate();
+
+  const { isLoading, isAuthenticated, login } = useAuth();
 
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
@@ -10,7 +15,7 @@ const Cadastro = () => {
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
 
-  const cadastrarUsuario = (e) => {
+  const cadastrarUsuario = async (e) => {
     e.preventDefault();
 
     setErro("");
@@ -33,8 +38,19 @@ const Cadastro = () => {
       return;
     }
 
-    navigate("/");
+    try {
+      await registerUser(nome, email, senha);
+      await login(email, senha);
+      navigate("/");
+    } catch {
+      setSenha("");
+      setErro("Erro ao cadastrar usuário");
+    }
   };
+
+  if (isLoading) return <Loading />;
+
+  if (isAuthenticated) navigate("/");
 
   return (
     <section className="min-h-screen bg-black px-5 py-10 text-texto sm:px-8 lg:px-12">

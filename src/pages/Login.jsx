@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/authProvider";
+import Loading from "../components/Loading";
 
 function Login() {
   const navigate = useNavigate();
 
+  const { isLoading, isAuthenticated, login } = useAuth();
+
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
-  const [sucesso, setSucesso] = useState("");
 
-  const entrar = (evento) => {
+  const entrar = async (evento) => {
     evento.preventDefault();
     setErro("");
-    setSucesso("");
 
     if (!email.trim() || !senha) {
       setErro("Preencha todos os campos.");
@@ -31,10 +33,17 @@ function Login() {
       return;
     }
 
-    // Envia os dados para a função de autenticação, se configurada.
-
-    setSucesso("Campos validados! A autenticação ainda não foi configurada.");
+    try {
+      await login(email, senha);
+    } catch {
+      setSenha("")
+      setErro("Email ou senha inválidos")
+    }
   };
+
+  if (isLoading) return <Loading />;
+
+  if (isAuthenticated) navigate("/");
 
   return (
     <section className="min-h-screen bg-black px-5 py-10 text-texto sm:px-8 lg:px-12">
@@ -94,7 +103,7 @@ function Login() {
               <input
                 id="login-senha"
                 type="password"
-                autoComplete="current-password"
+                autoComplete="password"
                 value={senha}
                 onChange={(evento) => setSenha(evento.target.value)}
                 placeholder="Digite sua senha"
@@ -110,15 +119,6 @@ function Login() {
                 className="rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-300"
               >
                 {erro}
-              </p>
-            )}
-
-            {sucesso && (
-              <p
-                role="status"
-                className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 px-4 py-3 text-sm text-emerald-300"
-              >
-                {sucesso}
               </p>
             )}
 

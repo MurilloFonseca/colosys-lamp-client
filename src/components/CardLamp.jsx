@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import { C_to_F } from "../helpers/temperature";
 
 const CardLamp = ({ lamp }) => {
   const navigate = useNavigate();
+
+  const unidade = localStorage.getItem("unidade-temperatura") ?? "C";
 
   const sensoresLamp = [
     {
@@ -23,7 +26,7 @@ const CardLamp = ({ lamp }) => {
       valor: lamp.temperature,
       cor: "bg-temperatura",
       icone: "fa-temperature-quarter",
-      unidade: "%",
+      unidade: `°${unidade}`,
     },
   ];
 
@@ -55,14 +58,22 @@ const CardLamp = ({ lamp }) => {
 
       <div className="mt-5 flex w-full max-w-60 flex-col gap-4 sm:mt-6">
         {sensoresLamp.map((sensor) => {
-          const valor = Math.min(100, Math.max(0, Number(sensor.valor) || 0));
+          const largura =
+            sensor.nome === "Temperatura"
+              ? 2 * Math.min(100, Math.max(0, Number(sensor.valor) || 0))
+              : Math.min(100, Math.max(0, Number(sensor.valor) || 0));
+
+          const valor =
+            sensor.nome === "Temperatura" && unidade === "F"
+              ? C_to_F(sensor.valor)
+              : sensor.valor;
 
           return (
             <div key={sensor.nome} className="w-full">
               <div className="mb-1 flex justify-between gap-2 text-xs text-texto/60">
                 <span>{sensor.nome}</span>
                 <span>
-                  {sensor.valor}
+                  {valor ?? 0}
                   {sensor.unidade}
                 </span>
               </div>
@@ -77,7 +88,7 @@ const CardLamp = ({ lamp }) => {
               >
                 <div
                   className={`flex h-full items-center justify-center rounded-full ${sensor.cor} transition-all duration-500`}
-                  style={{ width: `${valor}%` }}
+                  style={{ width: `${largura}%` }}
                 >
                   {valor > 0 && (
                     <i
@@ -93,7 +104,9 @@ const CardLamp = ({ lamp }) => {
 
       <button
         type="button"
-        onClick={() => navigate("/lamp/atual")}
+        onClick={() =>
+          navigate("/lamp/atual", { state: { id: lamp.deviceId } })
+        }
         className="mt-5 w-full max-w-32 cursor-pointer rounded-2xl border border-amarelo-claro/40 bg-preto-transparente py-2 font-['Playfair_Display'] text-sm font-medium text-amarelo-claro shadow transition-all duration-300 hover:border-amarelo-claro hover:shadow-[0_0_15px_rgba(234,179,8,0.2)]"
       >
         Ver +

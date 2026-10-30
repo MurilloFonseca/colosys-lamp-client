@@ -1,6 +1,6 @@
 const sensores = [
   {
-    id: "temperatura",
+    id: "temperature",
     nome: "Temperatura",
     descricaoConfig: "Defina os limites de temperatura da vinheria.",
     descricaoHistorico: "Histórico de temperatura",
@@ -10,7 +10,7 @@ const sensores = [
     fundo: "bg-temperatura",
   },
   {
-    id: "umidade",
+    id: "humidity",
     nome: "Umidade",
     descricaoConfig: "Defina os limites de umidade do ambiente.",
     descricaoHistorico: "Histórico de umidade",
@@ -20,7 +20,7 @@ const sensores = [
     fundo: "bg-umidade",
   },
   {
-    id: "luminosidade",
+    id: "luminosity",
     nome: "Luminosidade",
     descricaoConfig: "Defina os limites de luminosidade do ambiente.",
     descricaoHistorico: "Histórico de luminosidade",

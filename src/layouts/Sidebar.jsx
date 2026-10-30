@@ -3,10 +3,14 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import logoImg from "/assets/logo.png";
 import sidebarButtons from "../data/sidebarButtons";
+import { useAuth } from "../hooks/authProvider";
+import Loading from "../components/Loading";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
+  const { isLoading, isAuthenticated, logout, user } = useAuth();
 
   const [openPathname, setOpenPathname] = useState(null);
   const isOpen = openPathname === pathname;
@@ -21,6 +25,10 @@ const Sidebar = () => {
   const handleNavigation = (path) => {
     navigate(path);
   };
+
+  if (isLoading) return <Loading />;
+
+  if (!isAuthenticated) navigate("/login");
 
   return (
     <div className="min-h-screen flex w-full overflow-x-hidden bg-black">
@@ -98,12 +106,15 @@ const Sidebar = () => {
           {isOpen && (
             <div className="flex min-w-0 flex-1 flex-col gap-2 overflow-hidden">
               <h2 className="truncate font-['Playfair_Display'] font-semibold italic text-texto">
-                User
+                {user.username}
               </h2>
 
-              <p className="truncate font-light italic">Administrador</p>
+              <p className="truncate font-light italic">{user.email}</p>
               <div className="pl-18">
-                <button className="w-20 cursor-pointer rounded-xl border border-amarelo-claro/40 bg-preto-transparente font-['Playfair_Display'] text-sm font-medium text-amarelo-claro shadow transition-all duration-300 hover:border-amarelo-claro hover:shadow-[0_0_15px_rgba(234,179,8,0.2)]">
+                <button
+                  onClick={logout}
+                  className="w-20 cursor-pointer rounded-xl border border-amarelo-claro/40 bg-preto-transparente font-['Playfair_Display'] text-sm font-medium text-amarelo-claro shadow transition-all duration-300 hover:border-amarelo-claro hover:shadow-[0_0_15px_rgba(234,179,8,0.2)]"
+                >
                   Sair
                 </button>
               </div>

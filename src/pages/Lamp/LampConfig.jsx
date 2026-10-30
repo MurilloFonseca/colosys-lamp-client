@@ -1,31 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SectionHeading from "../../components/SectionHeading";
 
 import sensores from "../../data/sensores";
 import SensorConfigCard from "../../components/SensorConfigCard";
+import { useLampStream } from "../../hooks/useLampStream";
+import Loading from "../../components/Loading";
+import { useLocation } from "react-router-dom";
+import { upsateThresholds } from "../../api/endpoints/lamp";
+import { F_to_C } from "../../helpers/temperature";
 
 const LampConfig = () => {
-  const [config, setConfig] = useState({
-    temperatura: { min: 15, max: 30 },
-    umidade: { min: 40, max: 80 },
-    luminosidade: { min: 20, max: 70 },
-  });
+  const unidade = localStorage.getItem("unidade-temperatura") ?? "C";
+
+  const { state } = useLocation();
+  const { lamps } = useLampStream();
+
+  const lamp = lamps.find((l) => l.deviceId === state?.id);
+
+  const [config, setConfig] = useState(lamp?.thresholds);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setConfig(lamp?.thresholds);
+  }, [lamp?.thresholds]);
+
+  if (!lamp || !config) return <Loading />;
 
   function alterarValor(sensor, tipo, valor) {
+    const val =
+      sensor.nome === "Temperatura" && unidade === "F"
+        ? F_to_C(parseInt(valor))
+        : parseInt(valor);
+
     setConfig((prev) => ({
       ...prev,
       [sensor]: {
         ...prev[sensor],
-        [tipo]: parseInt(valor),
+        [tipo]: val,
       },
     }));
   }
 
-  const salvarConfiguracoes = (e) => {
+  const salvarConfiguracoes = async (e) => {
     e.preventDefault();
 
-    // Integração com o back-end será adicionada depois.
-    console.log("Configurações da lâmpada:", config);
+    await upsateThresholds(state?.id, config);
   };
 
   return (
