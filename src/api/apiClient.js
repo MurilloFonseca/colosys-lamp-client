@@ -5,6 +5,10 @@ export const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 export const apiClient = axios.create({
   baseURL: `${API_URL}/api`,
   withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+    "ngrok-skip-browser-warning": "true",
+  },
 });
 
 let isRedirecting = false;
